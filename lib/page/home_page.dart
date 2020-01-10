@@ -499,12 +499,14 @@ class FloorContent extends StatelessWidget {
     return Container(
       margin: EdgeInsets.all(1.0),
       width: ScreenUtil().setWidth(370),
+      height: ScreenUtil().setHeight(445),
       child: InkWell(
         onTap: () {
           print("点击了楼层商品");
         },
         child: Image.asset(
-          Utils.getImgPath("banner_test4"),
+          Utils.getImgPath("banner_test3"),
+          fit: BoxFit.fill,
         ),
       ),
     );
