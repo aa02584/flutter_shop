@@ -5,13 +5,24 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_shop/service/service_method.dart';
 import 'package:flutter_shop/util/utils.dart';
 import 'package:flutter_swiper/flutter_swiper.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class HomePage extends StatefulWidget {
   @override
   _HomePageState createState() => _HomePageState();
 }
 
-class _HomePageState extends State<HomePage> {
+class _HomePageState extends State<HomePage>
+    with AutomaticKeepAliveClientMixin {
+  @override
+  bool get wantKeepAlive => true;
+
+  @override
+  void initState() {
+    super.initState();
+    print("1111111");
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -42,13 +53,32 @@ class _HomePageState extends State<HomePage> {
               navigator.add(map4);
               Map map5 = Map();
               navigator.add(map5);
-              return Column(
-                children: <Widget>[
-                  SwiperDiy(swiperDateList: swiper),
-                  TopNavigator(navigatorList: navigator),
-                  AdBanner(adPicture: "test"),
-                  LeaderPhone(leaderImage: "", leaderPhone: ""),
-                ],
+              Map map6 = Map();
+              navigator.add(map6);
+              Map map7 = Map();
+              navigator.add(map7);
+              Map map8 = Map();
+              navigator.add(map8);
+              Map map9 = Map();
+              navigator.add(map9);
+              Map map10 = Map();
+              navigator.add(map10);
+              return SingleChildScrollView(
+                child: Column(
+                  children: <Widget>[
+                    SwiperDiy(swiperDateList: swiper),
+                    TopNavigator(navigatorList: navigator),
+                    AdBanner(adPicture: "test"),
+                    LeaderPhone(leaderImage: "", leaderPhone: "10086"),
+                    Recommend(recommendList: navigator),
+                    FloorTitle(picture_address: ""),
+                    FloorContent(floorGoodsList: navigator),
+                    FloorTitle(picture_address: ""),
+                    FloorContent(floorGoodsList: navigator),
+                    FloorTitle(picture_address: ""),
+                    FloorContent(floorGoodsList: navigator),
+                  ],
+                ),
               );
             }
           },
@@ -109,7 +139,7 @@ class TopNavigator extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: ScreenUtil().setHeight(160),
+      height: ScreenUtil().setHeight(280),
       padding: EdgeInsets.all(3.0),
       child: GridView.count(
         crossAxisCount: 5,
@@ -139,6 +169,7 @@ class AdBanner extends StatelessWidget {
   }
 }
 
+// 店长电话
 class LeaderPhone extends StatelessWidget {
   final String leaderImage;
   final String leaderPhone;
@@ -147,13 +178,229 @@ class LeaderPhone extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    return Stack(
+      alignment: AlignmentDirectional.center,
+      children: <Widget>[
+        InkWell(
+          onTap: _launcherUrl,
+          child: Image.asset(
+            Utils.getImgPath("banner_test1"),
+            height: ScreenUtil().setHeight(150),
+            width: ScreenUtil().setWidth(750),
+            fit: BoxFit.cover,
+          ),
+        ),
+        Text(
+          "打电话",
+          textAlign: TextAlign.center,
+          style: TextStyle(color: Colors.red, fontSize: 20),
+        )
+      ],
+    );
+  }
+
+  void _launcherUrl() async {
+    String url = "tel:" + leaderPhone;
+    if (await canLaunch(url)) {
+      await launch(url);
+    } else {
+      throw "url不能进行访问，异常";
+    }
+  }
+}
+
+// 横向滚动
+class Recommend extends StatelessWidget {
+  final List recommendList;
+
+  Recommend({Key key, this.recommendList}) : super(key: key);
+
+  ///
+  /// 标题
+  ///
+  Widget _titleWidget() {
     return Container(
-      child: InkWell(
-        onTap: () {},
-        child: Image.asset(
-          Utils.getImgPath("banner_test1"),
+      alignment: Alignment.centerLeft,
+      padding: EdgeInsets.fromLTRB(10.0, 2.0, 0, 3.0),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        border: Border(
+          bottom: BorderSide(width: 0.5, color: Colors.black12),
+        ),
+      ),
+      child: Text(
+        "商品推荐",
+        style: TextStyle(color: Colors.pink),
+      ),
+    );
+  }
+
+  /// 商品单独项方法
+  Widget _item() {
+    return InkWell(
+      onTap: () {},
+      child: Container(
+        height: ScreenUtil().setHeight(330),
+        width: ScreenUtil().setWidth(250),
+        padding: EdgeInsets.all(8.0),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          border: Border(
+            left: BorderSide(width: 1, color: Colors.black12),
+          ),
+        ),
+        child: Column(
+          children: <Widget>[
+            Image.asset(Utils.getImgPath("banner_test2")),
+            Text("¥ 19.00"),
+            Text(
+              "¥ 29.00",
+              style: TextStyle(
+                decoration: TextDecoration.lineThrough,
+                color: Colors.grey,
+              ),
+            ),
+          ],
         ),
       ),
     );
   }
+
+  /// 横向列表方法
+  Widget _recommedList() {
+    return Container(
+      height: ScreenUtil().setHeight(330),
+      child: ListView.builder(
+        scrollDirection: Axis.horizontal,
+        itemCount: recommendList.length,
+        itemBuilder: (context, index) {
+          return _item();
+        },
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: ScreenUtil().setHeight(380),
+      margin: EdgeInsets.only(top: 10.0),
+      child: Column(
+        children: <Widget>[
+          _titleWidget(),
+          _recommedList(),
+        ],
+      ),
+    );
+  }
+}
+
+// 楼层标题
+class FloorTitle extends StatelessWidget {
+  final String picture_address;
+
+  FloorTitle({Key key, this.picture_address}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+        padding: EdgeInsets.all(8.0),
+        child: Stack(
+          alignment: Alignment.center,
+          children: <Widget>[
+            Image.asset(
+              Utils.getImgPath("banner_test3"),
+              height: ScreenUtil().setHeight(160),
+              width: ScreenUtil().setWidth(750),
+              fit: BoxFit.fill,
+            ),
+            Text(
+              "大标题",
+              style: TextStyle(color: Colors.redAccent,fontSize: 25),
+            )
+          ],
+        ));
+  }
+}
+
+// 楼层商品列表
+class FloorContent extends StatelessWidget {
+  final List floorGoodsList;
+
+  FloorContent({Key key, this.floorGoodsList}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      child: Column(
+        children: <Widget>[
+          _firstRow(),
+//          _otherGoods(),
+        ],
+      ),
+    );
+  }
+
+  Widget _firstRow() {
+    return Row(
+      children: <Widget>[
+        Column(
+          children: <Widget>[
+            _goodsItem2(),
+            _goodsItem2(),
+          ],
+        ),
+
+        Column(
+          children: <Widget>[
+            _goodsItem(),
+            _goodsItem(),
+            _goodsItem(),
+          ],
+        ),
+      ],
+    );
+  }
+
+  Widget _otherGoods() {
+    return Row(
+      children: <Widget>[
+        _goodsItem2(),
+        _goodsItem2(),
+      ],
+    );
+  }
+
+  Widget _goodsItem() {
+    return Container(
+      margin: EdgeInsets.all(1.0),
+      width: ScreenUtil().setWidth(370),
+      child: InkWell(
+        onTap: () {
+          print("点击了楼层商品");
+        },
+        child: Image.asset(
+          Utils.getImgPath("banner_test4"),
+        ),
+      ),
+    );
+  }
+
+  Widget _goodsItem2() {
+    return Container(
+      margin: EdgeInsets.all(1.0),
+      width: ScreenUtil().setWidth(370),
+      height: ScreenUtil().setHeight(670),
+      child: InkWell(
+        onTap: () {
+          print("点击了楼层商品");
+        },
+        child: Image.asset(
+          Utils.getImgPath("banner_test1"),
+          fit: BoxFit.fill,
+        ),
+      ),
+    );
+  }
+
 }
