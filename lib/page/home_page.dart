@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_easyrefresh/easy_refresh.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_shop/service/service_method.dart';
 import 'package:flutter_shop/util/utils.dart';
@@ -14,13 +15,100 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage>
     with AutomaticKeepAliveClientMixin {
+  int page = 1;
+  List<Map> hotGoodsList = [];
+  GlobalKey<RefreshFooterState> _footerkey = GlobalKey<RefreshFooterState>();
+
   @override
   bool get wantKeepAlive => true;
 
   @override
   void initState() {
     super.initState();
+//    _getHotGoods();
     print("1111111");
+  }
+
+//  // 获取火爆专区数据
+//  void _getHotGoods() {
+//
+////    var formPage = {"page": page};
+////    request("homePageBelowConten", formData: formPage).then((val) {
+////      var data = json.decode(val.toString());
+////      List<Map> newGoodsList = (data['data'] as List).cast();
+////      setState(() {
+////        hotGoodsList.addAll(newGoodsList);
+////        page++;
+////      });
+////    });
+//  }
+
+  Widget hotTitle = Container(
+    margin: EdgeInsets.only(top: 10.0),
+    alignment: Alignment.center,
+    color: Colors.transparent,
+    padding: EdgeInsets.all(5.0),
+    child: Text("火爆专区"),
+  );
+
+  Widget _wrapList() {
+    if (hotGoodsList.length != 0) {
+      List<Widget> listWidget = hotGoodsList.map((val) {
+        return InkWell(
+          onTap: () {},
+          child: Container(
+            width: ScreenUtil().setWidth(372),
+            color: Colors.white,
+            padding: EdgeInsets.all(5.0),
+            margin: EdgeInsets.only(bottom: 3.0),
+            child: Column(
+              children: <Widget>[
+                Image.asset(
+                  Utils.getImgPath("banner_test4"),
+                  width: ScreenUtil().setWidth(370),
+                ),
+                Text(
+                  "测试商品",
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                    color: Colors.pink,
+                    fontSize: ScreenUtil().setSp(26),
+                  ),
+                ),
+                Row(
+                  children: <Widget>[
+                    Text("¥ 39.00"),
+                    Text(
+                      "¥ 90.98",
+                      style: TextStyle(
+                        color: Colors.black26,
+                        decoration: TextDecoration.lineThrough,
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        );
+      }).toList();
+
+      return Wrap(spacing: 2, children: listWidget);
+    } else {
+      return Text("没有数据");
+    }
+  }
+
+  Widget _hotGoods() {
+    return Container(
+      child: Column(
+        children: <Widget>[
+          hotTitle,
+          _wrapList(),
+        ],
+      ),
+    );
   }
 
   @override
@@ -30,7 +118,7 @@ class _HomePageState extends State<HomePage>
           title: Text("Flutter学习"),
         ),
         body: FutureBuilder(
-          future: getHomePageContent(),
+          future: request("homePageContent", formData: ""),
           builder: (context, snapshot) {
             if (snapshot.hasData) {
               var data = json.decode(snapshot.data.toString());
@@ -63,8 +151,18 @@ class _HomePageState extends State<HomePage>
               navigator.add(map9);
               Map map10 = Map();
               navigator.add(map10);
-              return SingleChildScrollView(
-                child: Column(
+              return EasyRefresh(
+                refreshFooter: ClassicsFooter(
+                  key: _footerkey,
+                  bgColor: Colors.white,
+                  textColor: Colors.pink,
+                  moreInfoColor: Colors.pink,
+                  showMore: true,
+                  noMoreText: "",
+                  moreInfo: "加载中..",
+                  loadReadyText: "上拉加载",
+                ),
+                child: ListView(
                   children: <Widget>[
                     SwiperDiy(swiperDateList: swiper),
                     TopNavigator(navigatorList: navigator),
@@ -75,10 +173,36 @@ class _HomePageState extends State<HomePage>
                     FloorContent(floorGoodsList: navigator),
                     FloorTitle(picture_address: ""),
                     FloorContent(floorGoodsList: navigator),
-                    FloorTitle(picture_address: ""),
-                    FloorContent(floorGoodsList: navigator),
+                    _hotGoods(),
                   ],
                 ),
+                loadMore: () async {
+                  List<Map> navigator = List();
+                  Map map = Map();
+                  navigator.add(map);
+                  Map map2 = Map();
+                  navigator.add(map2);
+                  Map map3 = Map();
+                  navigator.add(map3);
+                  Map map4 = Map();
+                  navigator.add(map4);
+                  Map map5 = Map();
+                  navigator.add(map5);
+                  Map map6 = Map();
+                  navigator.add(map6);
+                  Map map7 = Map();
+                  navigator.add(map7);
+                  Map map8 = Map();
+                  navigator.add(map8);
+                  Map map9 = Map();
+                  navigator.add(map9);
+                  Map map10 = Map();
+                  navigator.add(map10);
+                  setState(() {
+                    hotGoodsList.addAll(navigator);
+                    page++;
+                  });
+                },
               );
             }
           },
@@ -142,6 +266,7 @@ class TopNavigator extends StatelessWidget {
       height: ScreenUtil().setHeight(280),
       padding: EdgeInsets.all(3.0),
       child: GridView.count(
+        physics: NeverScrollableScrollPhysics(),
         crossAxisCount: 5,
         padding: EdgeInsets.all(5.0),
         children: navigatorList.map((item) {
@@ -316,7 +441,7 @@ class FloorTitle extends StatelessWidget {
             ),
             Text(
               "大标题",
-              style: TextStyle(color: Colors.redAccent,fontSize: 25),
+              style: TextStyle(color: Colors.redAccent, fontSize: 25),
             )
           ],
         ));
@@ -350,7 +475,6 @@ class FloorContent extends StatelessWidget {
             _goodsItem2(),
           ],
         ),
-
         Column(
           children: <Widget>[
             _goodsItem(),
@@ -402,5 +526,27 @@ class FloorContent extends StatelessWidget {
       ),
     );
   }
+}
 
+// 火爆专区
+class HotGoods extends StatefulWidget {
+  @override
+  _HotGoodsState createState() => _HotGoodsState();
+}
+
+class _HotGoodsState extends State<HotGoods> {
+  @override
+  void initState() {
+    super.initState();
+    request("homePageBelowConten", formData: null).then((val) {
+      print(val);
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      child: Text("收费的"),
+    );
+  }
 }
