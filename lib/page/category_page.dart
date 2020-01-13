@@ -3,6 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_shop/model/category.dart';
 import 'package:flutter_shop/provide/child_category.dart';
 import 'package:flutter_shop/util/utils.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:provide/provide.dart';
 
 class CategoryPage extends StatefulWidget {
@@ -206,14 +207,15 @@ class _CategoryGoodsListState extends State<CategoryGoodsList> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: ScreenUtil().setWidth(570),
-      height: ScreenUtil().setHeight(965),
-      child: ListView.builder(
-        itemCount: list.length,
-        itemBuilder: (context, index) {
-          return _listWidget(index);
-        },
+    return Expanded(
+      child: Container(
+        width: ScreenUtil().setWidth(570),
+        child: ListView.builder(
+          itemCount: list.length,
+          itemBuilder: (context, index) {
+            return _listWidget(index);
+          },
+        ),
       ),
     );
   }
@@ -300,7 +302,16 @@ class _CategoryGoodsListState extends State<CategoryGoodsList> {
 
   Widget _listWidget(int index) {
     return InkWell(
-      onTap: () {},
+      onTap: () {
+        Fluttertoast.showToast(
+          msg: "测试Toast",
+          toastLength: Toast.LENGTH_SHORT,
+          backgroundColor: Colors.pink,
+          gravity: ToastGravity.CENTER,
+          textColor: Colors.white,
+          fontSize: 16.0,
+        );
+      },
       child: Container(
         padding: EdgeInsets.only(top: 5.0, bottom: 5.0),
         decoration: BoxDecoration(

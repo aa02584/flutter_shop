@@ -365,8 +365,7 @@ class Recommend extends StatelessWidget {
     return InkWell(
       onTap: () {},
       child: Container(
-        height: ScreenUtil().setHeight(330),
-        width: ScreenUtil().setWidth(250),
+        width: ScreenUtil().setWidth(210),
         padding: EdgeInsets.all(8.0),
         decoration: BoxDecoration(
           color: Colors.white,
@@ -393,14 +392,15 @@ class Recommend extends StatelessWidget {
 
   /// 横向列表方法
   Widget _recommedList() {
-    return Container(
-      height: ScreenUtil().setHeight(240),
-      child: ListView.builder(
-        scrollDirection: Axis.horizontal,
-        itemCount: recommendList.length,
-        itemBuilder: (context, index) {
-          return _item();
-        },
+    return Expanded(
+      child: Container(
+        child: ListView.builder(
+          scrollDirection: Axis.horizontal,
+          itemCount: recommendList.length,
+          itemBuilder: (context, index) {
+            return _item();
+          },
+        ),
       ),
     );
   }
@@ -408,7 +408,7 @@ class Recommend extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: ScreenUtil().setHeight(290),
+      height: ScreenUtil().setHeight(270),
       margin: EdgeInsets.only(top: 10.0),
       child: Column(
         children: <Widget>[
