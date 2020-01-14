@@ -156,7 +156,7 @@ class MemberPage extends StatelessWidget {
     );
   }
 
-  Widget _actionList(){
+  Widget _actionList() {
     return Container(
       margin: EdgeInsets.only(top: 10),
       child: Column(

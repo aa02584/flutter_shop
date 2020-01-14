@@ -3,10 +3,12 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyrefresh/easy_refresh.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_shop/provide/current_index.dart';
 import 'package:flutter_shop/routers/application.dart';
 import 'package:flutter_shop/service/service_method.dart';
 import 'package:flutter_shop/util/utils.dart';
 import 'package:flutter_swiper/flutter_swiper.dart';
+import 'package:provide/provide.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class HomePage extends StatefulWidget {
@@ -154,6 +156,7 @@ class _HomePageState extends State<HomePage>
               navigator.add(map9);
               Map map10 = Map();
               navigator.add(map10);
+              hotGoodsList.addAll(navigator);
               return EasyRefresh(
                 refreshFooter: ClassicsFooter(
                   key: _footerkey,
@@ -254,7 +257,7 @@ class TopNavigator extends StatelessWidget {
   Widget _gridViewItemUI(BuildContext context, item) {
     return InkWell(
       onTap: () {
-        print("点击了导航");
+        _goCategory(context);
       },
       child: Column(
         children: <Widget>[
@@ -282,6 +285,12 @@ class TopNavigator extends StatelessWidget {
         }).toList(),
       ),
     );
+  }
+
+  void _goCategory(context) async {
+//    Provide.value<ChildCategory>(context).changeCategory(categroyId,index);
+//    Provide.value<ChildCategory>(context).getChildCategory( list[index].bxMallSubDto,categroyId);
+    Provide.value<CurrentIndexProvide>(context).changeIndex(1);
   }
 }
 

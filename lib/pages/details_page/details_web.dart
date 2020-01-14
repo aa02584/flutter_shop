@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:webview_flutter/webview_flutter.dart';
+import 'package:flutter_html/flutter_html.dart';
 
 class DetailsWeb extends StatelessWidget {
   @override
@@ -8,12 +8,9 @@ class DetailsWeb extends StatelessWidget {
 //        Provide.value<DetailsInfoProvide>(context).goodsInfo.data;
 
     return Container(
-      child: WebView(
-        onWebViewCreated: (WebViewController webViewController) {},
-        initialUrl: "https://www.zhibo8.cc/",
-        javascriptMode: JavascriptMode.unrestricted,
+      child: Html(
+        data: "https://book.flutterchina.club/chapter1/flutter_intro.html",
       ),
     );
   }
-
 }
