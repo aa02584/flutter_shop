@@ -33,6 +33,7 @@ dependencies:
   fluro: ^1.4.0
   # webview_flutter
   webview_flutter: ^0.3.16
+  shared_preferences: ^0.5.1
 
 
 dev_dependencies:
