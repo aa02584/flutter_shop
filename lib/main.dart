@@ -1,7 +1,6 @@
 import 'package:fluro/fluro.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_shop/model/details.dart';
-import 'package:flutter_shop/page/index_page.dart';
+import 'package:flutter_shop/pages/index_page.dart';
 import 'package:flutter_shop/provide/cart.dart';
 import 'package:flutter_shop/provide/child_category.dart';
 import 'package:flutter_shop/provide/counter.dart';
@@ -22,8 +21,7 @@ void main() {
     ..provide(Provider<Counter>.value(counter))
     ..provide(Provider<ChildCategory>.value(childVategory))
     ..provide(Provider<CartProvide>.value(cartProvide))
-    ..provide(Provider<DetailsInfoProvide>.value(detailsInfoProvide))
-  ;
+    ..provide(Provider<DetailsInfoProvide>.value(detailsInfoProvide));
   runApp(
     ProviderNode(
       child: MyApp(),
