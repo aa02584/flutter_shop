@@ -12,7 +12,7 @@ class DetailsBottom extends StatelessWidget {
     var goodsId = "232";
     var goodsName = "测试商品";
     var count = 1;
-    var price = "43.00";
+    var price = 45.98;
     var images = Utils.getImgPath("banner_test2");
 
 

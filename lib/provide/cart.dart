@@ -7,6 +7,9 @@ import 'package:shared_preferences/shared_preferences.dart';
 class CartProvide with ChangeNotifier {
   String cartString = "[]";
   List<CartInfoMode> cartList = [];
+  double allPrice = 0; // 总价格
+  int allGoodsCount = 0; // 总数量
+  bool isAllCheck = true; //是否全选
 
   save(goodId, goodsName, count, price, images) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -32,6 +35,7 @@ class CartProvide with ChangeNotifier {
       "count": count,
       "price": price,
       "images": images,
+      "isCheck": true,
     };
     tempList.add(newGoods);
     cartList.add(CartInfoMode.fromJson(newGoods));
@@ -58,12 +62,86 @@ class CartProvide with ChangeNotifier {
       cartList = [];
     } else {
       List<Map> tempList = (json.decode(cartString.toString()) as List).cast();
+
+      allPrice = 0;
+      allGoodsCount = 0;
+      isAllCheck = true;
       tempList.forEach(
         (item) {
+          if (item["isCheck"]) {
+            allPrice += (item["count"] * item["price"]);
+            allGoodsCount += item["count"];
+          } else {
+            isAllCheck = false;
+          }
+
           cartList.add(CartInfoMode.fromJson(item));
         },
       );
     }
     notifyListeners();
+  }
+
+  // 删除单个商品
+  deleteOneGoods(int index) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    cartString = prefs.getString("cartInfo");
+
+    List<Map> tempList = (json.decode(cartString.toString()) as List).cast();
+    tempList.removeAt(index);
+
+    cartString = json.encode(tempList).toString();
+    prefs.setString("cartInfo", cartString);
+
+    await getCartInfo();
+  }
+
+  // 改变单个checkbox
+  changeCheckState(CartInfoMode cartItem, index) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    cartString = prefs.getString("cartInfo");
+
+    List<Map> tempList = (json.decode(cartString.toString()) as List).cast();
+    tempList[index] = cartItem.toJson();
+    cartString = json.encode(tempList).toString();
+    prefs.setString("cartInfo", cartString);
+
+    await getCartInfo();
+  }
+
+  // 点击全选按钮
+  changeAllCheckBtnState(bool isCheck) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    cartString = prefs.getString("cartInfo");
+
+    List<Map> tempList = (json.decode(cartString.toString()) as List).cast();
+    List<Map> newList = [];
+    for (var value in tempList) {
+      var newItem = value;
+      newItem["isCheck"] = isCheck;
+      newList.add(newItem);
+    }
+
+    cartString = json.encode(newList).toString();
+    prefs.setString("cartInfo", cartString);
+    await getCartInfo();
+  }
+
+  // 商品数量加减
+  addOrReduceAction(var cartItem, String todo, int index) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    cartString = prefs.getString("cartInfo");
+
+    List<Map> tempList = (json.decode(cartString.toString()) as List).cast();
+
+    if (todo == "add") {
+      cartItem.count++;
+    } else if (cartItem.count > 1) {
+      cartItem.count--;
+    }
+    tempList[index] = cartItem.toJson();
+    cartString = json.encode(tempList).toString();
+    prefs.setString("cartInfo", cartString);
+    await getCartInfo();
   }
 }
